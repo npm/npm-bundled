@@ -1,10 +1,12 @@
 'use strict'
 
-// Once a dep is bundled, all its children are bundled
-// build the tree of who loads what
-// for each bundle dep at the top level only, walk their deps
-// and mark all of the ones in those trees as bundled
-// each dep loaded by a bundled dep is bundled, and metadeps
+// walk the tree of deps starting from the top level list of bundled deps
+// Any deps at the top level that are depended on by a bundled dep that
+// does not have that dep in its own node_modules folder are considered
+// bundled deps as well.  This list of names can be passed to npm-packlist
+// as the "bundled" argument.  Additionally, the nodeModulesCache and
+// packageJsonCache are shared so that packlist doesn't have to re-read
+// dirs and files already consumed in this pass.
 
 const fs = require('fs')
 const path = require('path')
@@ -19,11 +21,18 @@ class BundleWalker extends EE {
     this.parent = opt.parent || null
     if (this.parent) {
       this.result = this.parent.result
-      this.result.add(this.path)
+      // only collect results in node_modules folders at the top level
+      // since the node_modules in a bundled dep is included always
+      if (!this.parent.parent)
+        this.result.add(path.basename(this.path))
       this.root = this.parent.root
+      this.packageJsonCache = this.parent.packageJsonCache
+      this.nodeModulesCache = this.parent.nodeModulesCache
     } else {
       this.result = new Set()
       this.root = this.path
+      this.packageJsonCache = opt.packageJsonCache || new Map()
+      this.nodeModulesCache = opt.nodeModulesCache || new Map()
     }
 
     this.children = 0
@@ -34,9 +43,7 @@ class BundleWalker extends EE {
 
   done () {
     if (!this.parent) {
-      const res = Array.from(this.result).map(
-        f => f.substr(this.root.length + 1)
-      )
+      const res = Array.from(this.result)
       this.result = res
       this.emit('done', res)
     } else {
@@ -45,19 +52,30 @@ class BundleWalker extends EE {
   }
 
   walk () {
-    fs.readFile(this.path + '/package.json', (er, data) =>
-      er ? this.emit('error', er) : this.onPackageJson(data))
+    const pj = this.path + '/package.json'
+    if (this.packageJsonCache.has(pj))
+      this.onPackage(this.packageJsonCache.get(pj))
+    else
+      this.readPackageJson(pj)
+    return this
   }
 
-  onPackageJson (data) {
+  readPackageJson (pj) {
+    fs.readFile(pj, (er, data) =>
+      er ? this.emit('error', er) : this.onPackageJson(pj, data))
+  }
+
+  onPackageJson (pj, data) {
     try {
       this.package = JSON.parse(data + '')
     } catch (er) {
       return this.done()
     }
+    this.packageJsonCache.set(pj, this.package)
+    this.onPackage(this.package)
+  }
 
-    const pkg = this.package
-
+  onPackage (pkg) {
     // all deps are bundled if we got here as a child.
     // otherwise, only bundle bundledDeps
     // Get a unique-ified array with a short-lived Set
@@ -72,7 +90,11 @@ class BundleWalker extends EE {
     }
 
     this.bundle = bd
-    this.readModules()
+    const nm = this.path + '/node_modules'
+    if (this.nodeModulesCache.has(nm))
+      this.onReaddir(this.nodeModulesCache.get(nm))
+    else
+      this.readModules()
   }
 
   readModules () {
@@ -83,9 +105,9 @@ class BundleWalker extends EE {
   onReaddir (nm) {
     // keep track of what we have, in case children need it
     this.node_modules = nm
-    this.bundle.forEach(dep => {
-      this.childDep(dep)
-    })
+
+    this.nodeModulesCache.set(this.path + '/node_modules', nm)
+    this.bundle.forEach(dep => this.childDep(dep))
     if (this.children === 0)
       this.done()
   }
@@ -117,19 +139,15 @@ class BundleWalkerSync extends BundleWalker {
     super(opt)
   }
 
-  walk () {
-    try {
-      this.onPackageJson(fs.readFileSync(
-        this.path + '/package.json'))
-    } catch (er) {}
+  readPackageJson (pj) {
+    this.onPackageJson(pj, fs.readFileSync(pj))
     return this
   }
 
   readModules () {
-    //try {
-      const nm = readdirNodeModulesSync(this.path + '/node_modules')
-      this.onReaddir(nm)
-    //} catch (er) {}
+    try {
+      this.onReaddir(readdirNodeModulesSync(this.path + '/node_modules'))
+    } catch (er) {}
   }
 
   child (dep) {
@@ -190,7 +208,7 @@ const walk = (options, callback) => {
 }
 
 const walkSync = options => {
-  return Array.from(new BundleWalkerSync(options).walk().result)
+  return new BundleWalkerSync(options).walk().result
 }
 
 module.exports = walk
