@@ -23,8 +23,11 @@ class BundleWalker extends EE {
       this.result = this.parent.result
       // only collect results in node_modules folders at the top level
       // since the node_modules in a bundled dep is included always
-      if (!this.parent.parent)
-        this.result.add(path.basename(this.path))
+      if (!this.parent.parent) {
+        const base = path.basename(this.path)
+        const scope = path.basename(path.dirname(this.path))
+        this.result.add(/^@/.test(scope) ? scope + '/' + base : base)
+      }
       this.root = this.parent.root
       this.packageJsonCache = this.parent.packageJsonCache
       this.nodeModulesCache = this.parent.nodeModulesCache
@@ -62,7 +65,7 @@ class BundleWalker extends EE {
 
   readPackageJson (pj) {
     fs.readFile(pj, (er, data) =>
-      er ? this.emit('error', er) : this.onPackageJson(pj, data))
+      er ? this.done() : this.onPackageJson(pj, data))
   }
 
   onPackageJson (pj, data) {
@@ -139,6 +142,12 @@ class BundleWalkerSync extends BundleWalker {
     super(opt)
   }
 
+  start () {
+    super.start()
+    this.done()
+    return this
+  }
+
   readPackageJson (pj) {
     this.onPackageJson(pj, fs.readFileSync(pj))
     return this
@@ -167,6 +176,7 @@ const readdirNodeModules = (nm, cb) => {
       if (!scopes.length)
         cb(null, set)
       else {
+        const unscoped = set.filter(f => !/^@/.test(f))
         let count = scopes.length
         scopes.forEach(scope => {
           fs.readdir(nm + '/' + scope, (er, pkgs) => {
@@ -174,11 +184,11 @@ const readdirNodeModules = (nm, cb) => {
               cb(er)
             else {
               if (er || !pkgs.length)
-                set.push(scope)
+                unscoped.push(scope)
               else
-                set.push.apply(set, pkgs.map(p => scope + '/' + p))
+                unscoped.push.apply(unscoped, pkgs.map(p => scope + '/' + p))
               if (--count === 0)
-                cb(null, set)
+                cb(null, unscoped)
             }
           })
         })
@@ -189,15 +199,12 @@ const readdirNodeModules = (nm, cb) => {
 
 const readdirNodeModulesSync = nm => {
   const set = fs.readdirSync(nm)
-  const scopes = set.filter(f => /^@/.test(f))
-  scopes.forEach(scope => {
+  const unscoped = set.filter(f => !/^@/.test(f))
+  const scopes = set.filter(f => /^@/.test(f)).map(scope => {
     const pkgs = fs.readdirSync(nm + '/' + scope)
-    if (!pkgs.length)
-      set.push(scope)
-    else
-      set.push.apply(set, pkgs.map(p => scope + '/' + p))
-  })
-  return set
+    return pkgs.length ? pkgs.map(p => scope + '/' + p) : [scope]
+  }).reduce((a, b) => a.concat(b))
+  return unscoped.concat(scopes)
 }
 
 const walk = (options, callback) => {
