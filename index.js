@@ -51,7 +51,7 @@ class BundleWalker extends EE {
     }
   }
 
-  walk () {
+  start () {
     const pj = this.path + '/package.json'
     if (this.packageJsonCache.has(pj))
       this.onPackage(this.packageJsonCache.get(pj))
@@ -126,7 +126,7 @@ class BundleWalker extends EE {
       path: p,
       parent: this
     })
-    child.walk()
+    child.start()
     child.on('done', _ => {
       if (--this.children === 0)
         this.done()
@@ -154,7 +154,7 @@ class BundleWalkerSync extends BundleWalker {
     new BundleWalkerSync({
       path: this.path + '/node_modules/' + dep,
       parent: this
-    }).walk()
+    }).start()
   }
 }
 
@@ -202,13 +202,13 @@ const readdirNodeModulesSync = nm => {
 
 const walk = (options, callback) => {
   const p = new Promise((resolve, reject) => {
-    new BundleWalker(options).on('done', resolve).on('error', reject).walk()
+    new BundleWalker(options).on('done', resolve).on('error', reject).start()
   })
   return callback ? p.then(res => callback(null, res), callback) : p
 }
 
 const walkSync = options => {
-  return new BundleWalkerSync(options).walk().result
+  return new BundleWalkerSync(options).start().result
 }
 
 module.exports = walk
