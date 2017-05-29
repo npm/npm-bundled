@@ -35,6 +35,7 @@ class BundleWalker extends EE {
       this.packageJsonCache = opt.packageJsonCache || new Map()
     }
 
+    this.didDone = false
     this.children = 0
     this.node_modules = []
     this.package = null
@@ -42,12 +43,15 @@ class BundleWalker extends EE {
   }
 
   done () {
-    if (!this.parent) {
-      const res = Array.from(this.result)
-      this.result = res
-      this.emit('done', res)
-    } else {
-      this.emit('done')
+    if (!this.didDone) {
+      this.didDone = true
+      if (!this.parent) {
+        const res = Array.from(this.result)
+        this.result = res
+        this.emit('done', res)
+      } else {
+        this.emit('done')
+      }
     }
   }
 
@@ -122,11 +126,11 @@ class BundleWalker extends EE {
       path: p,
       parent: this
     })
-    child.start()
     child.on('done', _ => {
       if (--this.children === 0)
         this.done()
     })
+    child.start()
   }
 }
 
