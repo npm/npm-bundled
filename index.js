@@ -4,9 +4,8 @@
 // Any deps at the top level that are depended on by a bundled dep that
 // does not have that dep in its own node_modules folder are considered
 // bundled deps as well.  This list of names can be passed to npm-packlist
-// as the "bundled" argument.  Additionally, the nodeModulesCache and
-// packageJsonCache are shared so that packlist doesn't have to re-read
-// dirs and files already consumed in this pass.
+// as the "bundled" argument.  Additionally, packageJsonCache is shared so
+// packlist doesn't have to re-read files already consumed in this pass
 
 const fs = require('fs')
 const path = require('path')
@@ -30,12 +29,10 @@ class BundleWalker extends EE {
       }
       this.root = this.parent.root
       this.packageJsonCache = this.parent.packageJsonCache
-      this.nodeModulesCache = this.parent.nodeModulesCache
     } else {
       this.result = new Set()
       this.root = this.path
       this.packageJsonCache = opt.packageJsonCache || new Map()
-      this.nodeModulesCache = opt.nodeModulesCache || new Map()
     }
 
     this.children = 0
@@ -88,28 +85,23 @@ class BundleWalker extends EE {
       : pkg.bundleDependencies || pkg.bundledDependencies || []
     ))
 
-    if (!bd.length) {
+    if (!bd.length)
       return this.done()
-    }
 
     this.bundle = bd
     const nm = this.path + '/node_modules'
-    if (this.nodeModulesCache.has(nm))
-      this.onReaddir(this.nodeModulesCache.get(nm))
-    else
-      this.readModules()
+    this.readModules()
   }
 
   readModules () {
     readdirNodeModules(this.path + '/node_modules', (er, nm) =>
-      er ? this.done() : this.onReaddir(nm))
+      er ? this.onReaddir([]) : this.onReaddir(nm))
   }
 
   onReaddir (nm) {
     // keep track of what we have, in case children need it
     this.node_modules = nm
 
-    this.nodeModulesCache.set(this.path + '/node_modules', nm)
     this.bundle.forEach(dep => this.childDep(dep))
     if (this.children === 0)
       this.done()
@@ -118,8 +110,9 @@ class BundleWalker extends EE {
   childDep (dep) {
     if (this.node_modules.indexOf(dep) !== -1) {
       this.child(dep)
-    } else if (this.parent)
+    } else if (this.parent) {
       this.parent.childDep(dep)
+    }
   }
 
   child (dep) {
@@ -149,14 +142,18 @@ class BundleWalkerSync extends BundleWalker {
   }
 
   readPackageJson (pj) {
-    this.onPackageJson(pj, fs.readFileSync(pj))
+    try {
+      this.onPackageJson(pj, fs.readFileSync(pj))
+    } catch (er) {}
     return this
   }
 
   readModules () {
     try {
       this.onReaddir(readdirNodeModulesSync(this.path + '/node_modules'))
-    } catch (er) {}
+    } catch (er) {
+      this.onReaddir([])
+    }
   }
 
   child (dep) {
@@ -180,16 +177,12 @@ const readdirNodeModules = (nm, cb) => {
         let count = scopes.length
         scopes.forEach(scope => {
           fs.readdir(nm + '/' + scope, (er, pkgs) => {
-            if (er)
-              cb(er)
-            else {
-              if (er || !pkgs.length)
-                unscoped.push(scope)
-              else
-                unscoped.push.apply(unscoped, pkgs.map(p => scope + '/' + p))
-              if (--count === 0)
-                cb(null, unscoped)
-            }
+            if (er || !pkgs.length)
+              unscoped.push(scope)
+            else
+              unscoped.push.apply(unscoped, pkgs.map(p => scope + '/' + p))
+            if (--count === 0)
+              cb(null, unscoped)
           })
         })
       }
@@ -201,9 +194,13 @@ const readdirNodeModulesSync = nm => {
   const set = fs.readdirSync(nm)
   const unscoped = set.filter(f => !/^@/.test(f))
   const scopes = set.filter(f => /^@/.test(f)).map(scope => {
-    const pkgs = fs.readdirSync(nm + '/' + scope)
-    return pkgs.length ? pkgs.map(p => scope + '/' + p) : [scope]
-  }).reduce((a, b) => a.concat(b))
+    try {
+      const pkgs = fs.readdirSync(nm + '/' + scope)
+      return pkgs.length ? pkgs.map(p => scope + '/' + p) : [scope]
+    } catch (er) {
+      return [scope]
+    }
+  }).reduce((a, b) => a.concat(b), [])
   return unscoped.concat(scopes)
 }
 

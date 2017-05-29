@@ -8,5 +8,14 @@
     "url": "git+https://github.com/npm/npm-bundled.git"
   },
   "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mkdirp": "^0.5.1",
+    "mutate-fs": "^1.1.0",
+    "rimraf": "^2.6.1",
+    "tap": "^10.3.2"
+  },
+  "scripts": {
+    "test": "tap test/*.js -J --100"
+  }
 }
