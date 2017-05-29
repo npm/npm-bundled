@@ -83,11 +83,13 @@ class BundleWalker extends EE {
     // all deps are bundled if we got here as a child.
     // otherwise, only bundle bundledDeps
     // Get a unique-ified array with a short-lived Set
-    const bd = Array.from(new Set(
-      this.parent ? Object.keys(pkg.dependencies || {}).concat(
+    const bdRaw = this.parent
+      ? Object.keys(pkg.dependencies || {}).concat(
         Object.keys(pkg.optionalDependencies || {}))
       : pkg.bundleDependencies || pkg.bundledDependencies || []
-    ))
+
+    const bd = Array.from(new Set(
+      Array.isArray(bdRaw) ? bdRaw : Object.keys(bdRaw)))
 
     if (!bd.length)
       return this.done()
