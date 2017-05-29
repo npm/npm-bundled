@@ -1,6 +1,6 @@
 {
   "name": "npm-bundled",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "list things in node_modules that are bundledDependencies, or transitive dependencies thereof",
   "main": "index.js",
   "repository": {
@@ -21,5 +21,7 @@
     "postversion": "npm publish",
     "postpublish": "git push origin --all; git push origin --tags"
   },
-  "files": ["index.js"]
+  "files": [
+    "index.js"
+  ]
 }
