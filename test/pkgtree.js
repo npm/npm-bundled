@@ -1,3 +1,4 @@
+'use strict'
 // create a package tree for a test
 // pass in the test object to rm on teardown
 
