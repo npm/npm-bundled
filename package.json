@@ -16,6 +16,7 @@
     "tap": "^10.3.2"
   },
   "scripts": {
+    "pretest": "cd test/fixtures/bundle-ms-rest-azure && npm install",
     "test": "tap test/*.js -J --100",
     "preversion": "npm test",
     "postversion": "npm publish",
