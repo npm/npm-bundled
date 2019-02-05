@@ -1,5 +1,6 @@
 'use strict'
 const t = require('tap')
+const fs = require('fs')
 const path = require('path')
 const pkg = path.resolve(__dirname, path.basename(__filename, '.js'))
 
@@ -75,4 +76,41 @@ t.test('async', t => {
   bw2.on('done', result => check(result, t))
   bw.start()
   bw2.start()
+})
+
+t.test('mixed', t => {
+  t.plan(2)
+  process.chdir(pkg)
+  const bw = new walk.BundleWalkerSync({ path:pkg })
+  const bw2 = new walk.BundleWalker({
+    packageJsonCache: bw.packageJsonCache
+  })
+  bw.start()
+  check(bw.result, t)
+  bw2.start()
+  bw2.on('done', result => check(result, t))
+})
+
+t.test('mixed, nothing to bundle', t => {
+  fs.writeFileSync(pkg + '/package.json', JSON.stringify({
+    name: 'a',
+    version: '1.2.3',
+    dependencies: {
+      b: '1.2.3',
+      d: '1.2.3'
+    },
+  }, null, 2))
+
+  const check = (result, t) => t.same(result, [])
+
+  t.plan(2)
+  process.chdir(pkg)
+  const bw = new walk.BundleWalkerSync({ path:pkg })
+  const bw2 = new walk.BundleWalker({
+    packageJsonCache: bw.packageJsonCache
+  })
+  bw.start()
+  check(bw.result, t)
+  bw2.start()
+  bw2.addListener('done', result => check(result, t))
 })
