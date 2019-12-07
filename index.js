@@ -92,17 +92,23 @@ class BundleWalker extends EE {
     this.onPackage(this.package)
   }
 
+  allDepsBundled (pkg) {
+    return Object.keys(pkg.dependencies || {}).concat(
+      Object.keys(pkg.optionalDependencies || {}))
+  }
+
   onPackage (pkg) {
     // all deps are bundled if we got here as a child.
     // otherwise, only bundle bundledDeps
     // Get a unique-ified array with a short-lived Set
     const bdRaw = this.parent
-      ? Object.keys(pkg.dependencies || {}).concat(
-        Object.keys(pkg.optionalDependencies || {}))
+      ? this.allDepsBundled(pkg)
       : pkg.bundleDependencies || pkg.bundledDependencies || []
 
     const bd = Array.from(new Set(
-      Array.isArray(bdRaw) ? bdRaw : Object.keys(bdRaw)))
+      Array.isArray(bdRaw) ? bdRaw
+      : bdRaw === true ? this.allDepsBundled(pkg)
+      : Object.keys(bdRaw)))
 
     if (!bd.length)
       return this.done()

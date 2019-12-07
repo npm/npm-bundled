@@ -7,7 +7,7 @@ require('./pkgtree.js')(pkg, {
   $package: {
     name: 'a',
     version: '1.2.3',
-    bundledDependencies: false,
+    bundledDependencies: true,
     dependencies: {
       b: '1.2.3',
       d: '1.2.3'
@@ -17,7 +17,6 @@ require('./pkgtree.js')(pkg, {
     d: { $package: {
       name: 'd',
       version: '1.2.3',
-      bundleDependencies: false,
       dependencies: {
         e: '1.2.3'
       }
@@ -51,7 +50,7 @@ require('./pkgtree.js')(pkg, {
 const walk = require('../')
 
 const check = (result, t) => {
-  t.same(result, [])
+  t.same(result.sort(), ['b', 'c', 'd', 'e'])
   t.end()
 }
 
