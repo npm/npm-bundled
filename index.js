@@ -10,6 +10,9 @@
 const fs = require('fs')
 const path = require('path')
 const EE = require('events').EventEmitter
+// we don't care about the package bins, but we share a pj cache
+// with other modules that DO care about it, so keep it nice.
+const normalizePackageBin = require('npm-normalize-package-bin')
 
 class BundleWalker extends EE {
   constructor (opt) {
@@ -84,7 +87,7 @@ class BundleWalker extends EE {
 
   onPackageJson (pj, data) {
     try {
-      this.package = JSON.parse(data + '')
+      this.package = normalizePackageBin(JSON.parse(data + ''))
     } catch (er) {
       return this.done()
     }
@@ -101,8 +104,7 @@ class BundleWalker extends EE {
     // all deps are bundled if we got here as a child.
     // otherwise, only bundle bundledDeps
     // Get a unique-ified array with a short-lived Set
-    const bdRaw = this.parent
-      ? this.allDepsBundled(pkg)
+    const bdRaw = this.parent ? this.allDepsBundled(pkg)
       : pkg.bundleDependencies || pkg.bundledDependencies || []
 
     const bd = Array.from(new Set(

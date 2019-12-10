@@ -23,5 +23,8 @@
   },
   "files": [
     "index.js"
-  ]
+  ],
+  "dependencies": {
+    "npm-normalize-package-bin": "^1.0.1"
+  }
 }
