@@ -1,7 +1,4 @@
-'use strict'
 const t = require('tap')
-const path = require('path')
-const pkg = path.resolve(__dirname, path.basename(__filename, '.js'))
 
 // dep graph:
 // root -> (a, b@1, c@1), BUNDLE(a)
@@ -21,7 +18,7 @@ const pkg = path.resolve(__dirname, path.basename(__filename, '.js'))
 // +-- c@1
 // +-- d@1
 
-require('./pkgtree.js')(pkg, {
+const pkg = require('./pkgtree')(t, {
   $package: {
     name: 'root',
     version: '1.0.0',
@@ -30,7 +27,7 @@ require('./pkgtree.js')(pkg, {
       b: '1',
       c: '1',
     },
-    bundleDependencies: [ 'a' ]
+    bundleDependencies: ['a'],
   },
   a: {
     $package: {
@@ -45,26 +42,26 @@ require('./pkgtree.js')(pkg, {
       name: 'b',
       version: '2.0.0',
       dependencies: { d: '2.0.0' },
-    }},
+    } },
     c: { $package: {
       name: 'c',
       version: '2.0.0',
       dependencies: { d: '2.0.0' },
-    }},
-    d: { $package: { name: 'd', version: '2.0.0' }},
+    } },
+    d: { $package: { name: 'd', version: '2.0.0' } },
   },
   b: { $package: {
     name: 'b',
     version: '1.0.0',
-    dependencies: { d: '1.0.0' }
-  }},
+    dependencies: { d: '1.0.0' },
+  } },
   c: { $package: {
     name: 'c',
     version: '1.0.0',
-    dependencies: { d: '1.0.0' }
-  }},
-  d: { $package: { name: 'd', version: '1.0.0' }},
-}, t)
+    dependencies: { d: '1.0.0' },
+  } },
+  d: { $package: { name: 'd', version: '1.0.0' } },
+})
 
 const walk = require('../')
 
@@ -73,5 +70,5 @@ const check = (result, t) => {
   t.end()
 }
 
-t.test('sync', t => check(walk.sync({path: pkg}), t))
-t.test('async', t => walk({path: pkg}).then(res => check(res, t)))
+t.test('sync', t => check(walk.sync({ path: pkg }), t))
+t.test('async', t => walk({ path: pkg }).then(res => check(res, t)))

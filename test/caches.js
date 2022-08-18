@@ -1,63 +1,61 @@
-'use strict'
 const t = require('tap')
 const fs = require('fs')
-const path = require('path')
-const pkg = path.resolve(__dirname, path.basename(__filename, '.js'))
 
-require('./pkgtree.js')(pkg, {
+const pkg = require('./pkgtree')(t, {
   $package: {
     name: 'a',
     version: '1.2.3',
     dependencies: {
       b: '1.2.3',
-      d: '1.2.3'
+      d: '1.2.3',
     },
-    bundledDependencies: [ 'b' ]
+    bundledDependencies: ['b'],
   },
   b: {
     d: { $package: {
       name: 'd',
       version: '1.2.3',
       dependencies: {
-        e: '1.2.3'
-      }
-    }},
+        e: '1.2.3',
+      },
+    } },
     $package: {
       name: 'b',
       version: '1.2.3',
       dependencies: {
         c: '1.2.3',
-        d: '1.2.3'
-      }
-    }
+        d: '1.2.3',
+      },
+    },
   },
   c: { $package: {
     name: 'c',
-    version: '1.2.3'
-  }},
+    version: '1.2.3',
+  } },
   d: { $package: {
     name: 'd',
     version: '1.2.3',
     dependencies: {
-      c: '1.2.3'
-    }
-  }},
+      c: '1.2.3',
+    },
+  } },
   e: { $package: {
     name: 'e',
-    version: '1.2.3'
-  }}
-}, t)
+    version: '1.2.3',
+  } },
+})
 
 const walk = require('../')
 
 const check = (result, t) => t.same(result, ['b', 'c', 'e'])
+const checkEmpty = (result, t) => t.same(result, [])
 
 t.test('sync', t => {
   t.plan(2)
   const bw = new walk.BundleWalkerSync({ path: pkg })
   const bw2 = new walk.BundleWalkerSync({
     path: pkg,
-    packageJsonCache: bw.packageJsonCache
+    packageJsonCache: bw.packageJsonCache,
   })
   bw.start()
   bw2.start()
@@ -70,7 +68,7 @@ t.test('async', t => {
   process.chdir(pkg)
   const bw = new walk.BundleWalker()
   const bw2 = new walk.BundleWalker({
-    packageJsonCache: bw.packageJsonCache
+    packageJsonCache: bw.packageJsonCache,
   })
   bw.on('done', result => check(result, t))
   bw2.on('done', result => check(result, t))
@@ -81,9 +79,9 @@ t.test('async', t => {
 t.test('mixed', t => {
   t.plan(2)
   process.chdir(pkg)
-  const bw = new walk.BundleWalkerSync({ path:pkg })
+  const bw = new walk.BundleWalkerSync({ path: pkg })
   const bw2 = new walk.BundleWalker({
-    packageJsonCache: bw.packageJsonCache
+    packageJsonCache: bw.packageJsonCache,
   })
   bw.start()
   check(bw.result, t)
@@ -97,20 +95,18 @@ t.test('mixed, nothing to bundle', t => {
     version: '1.2.3',
     dependencies: {
       b: '1.2.3',
-      d: '1.2.3'
+      d: '1.2.3',
     },
   }, null, 2))
 
-  const check = (result, t) => t.same(result, [])
-
   t.plan(2)
   process.chdir(pkg)
-  const bw = new walk.BundleWalkerSync({ path:pkg })
+  const bw = new walk.BundleWalkerSync({ path: pkg })
   const bw2 = new walk.BundleWalker({
-    packageJsonCache: bw.packageJsonCache
+    packageJsonCache: bw.packageJsonCache,
   })
   bw.start()
-  check(bw.result, t)
+  checkEmpty(bw.result, t)
   bw2.start()
-  bw2.addListener('done', result => check(result, t))
+  bw2.addListener('done', result => checkEmpty(result, t))
 })
