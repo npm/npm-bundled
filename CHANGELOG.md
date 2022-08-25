@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/npm/npm-bundled/compare/v2.0.0...v2.0.1) (2022-08-25)
+
+
+### Dependencies
+
+* bump npm-normalize-package-bin from 1.0.1 to 2.0.0 ([#13](https://github.com/npm/npm-bundled/issues/13)) ([aec07c1](https://github.com/npm/npm-bundled/commit/aec07c1fff4dd0690e3792c6fe00b6d7e574c017))
+
 ## [2.0.0](https://github.com/npm/npm-bundled/compare/v1.1.2...v2.0.0) (2022-08-22)
 
 
