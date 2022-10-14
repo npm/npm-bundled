@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.0.0](https://github.com/npm/npm-bundled/compare/v2.0.1...v3.0.0) (2022-10-14)
+
+### ⚠️ BREAKING CHANGES
+
+* `npm-bundled` is now compatible with the following semver range for node: `^14.17.0 || ^16.13.0 || >=18.0.0`
+
+### Features
+
+* [`7682b9e`](https://github.com/npm/npm-bundled/commit/7682b9ef3059b92fab54a89190d8e6a7b3c25425) [#23](https://github.com/npm/npm-bundled/pull/23) postinstall for dependabot template-oss PR (@lukekarrys)
+
+### Dependencies
+
+* [`3a21cbe`](https://github.com/npm/npm-bundled/commit/3a21cbe987497d1830d8c382c4fa7e9e1547723b) [#30](https://github.com/npm/npm-bundled/pull/30) bump npm-normalize-package-bin from 2.0.0 to 3.0.0
+
 ## [2.0.1](https://github.com/npm/npm-bundled/compare/v2.0.0...v2.0.1) (2022-08-25)
 
 
