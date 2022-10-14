@@ -10,7 +10,7 @@
   "author": "GitHub Inc.",
   "license": "ISC",
   "devDependencies": {
-    "@npmcli/eslint-config": "^3.1.0",
+    "@npmcli/eslint-config": "^4.0.0",
     "@npmcli/template-oss": "4.5.1",
     "mkdirp": "^1.0.4",
     "mutate-fs": "^2.1.1",
