@@ -65,9 +65,9 @@ t.test('sync', t => {
 
 t.test('async', t => {
   t.plan(2)
-  process.chdir(pkg)
-  const bw = new walk.BundleWalker()
+  const bw = new walk.BundleWalker({ path: pkg })
   const bw2 = new walk.BundleWalker({
+    path: pkg,
     packageJsonCache: bw.packageJsonCache,
   })
   bw.on('done', result => check(result, t))
@@ -78,9 +78,9 @@ t.test('async', t => {
 
 t.test('mixed', t => {
   t.plan(2)
-  process.chdir(pkg)
   const bw = new walk.BundleWalkerSync({ path: pkg })
   const bw2 = new walk.BundleWalker({
+    path: pkg,
     packageJsonCache: bw.packageJsonCache,
   })
   bw.start()
@@ -100,9 +100,9 @@ t.test('mixed, nothing to bundle', t => {
   }, null, 2))
 
   t.plan(2)
-  process.chdir(pkg)
   const bw = new walk.BundleWalkerSync({ path: pkg })
   const bw2 = new walk.BundleWalker({
+    path: pkg,
     packageJsonCache: bw.packageJsonCache,
   })
   bw.start()
