@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.0.1](https://github.com/npm/npm-bundled/compare/v3.0.0...v3.0.1) (2024-05-06)
+
+### Bug Fixes
+
+* [`fdc7518`](https://github.com/npm/npm-bundled/commit/fdc7518448dd60931b3d96b5044486f645c9b9d0) [#87](https://github.com/npm/npm-bundled/pull/87) linting: no-unused-vars (@lukekarrys)
+
+### Documentation
+
+* [`aee7cab`](https://github.com/npm/npm-bundled/commit/aee7cab87960931325f9c4d9dbb39721b85b5e71) [#84](https://github.com/npm/npm-bundled/pull/84) readme: fix broken badge URL (#84) (@10xLaCroixDrinker)
+
+### Chores
+
+* [`e7ae896`](https://github.com/npm/npm-bundled/commit/e7ae896253c02505dbefd9ff55424447d7da4cac) [#89](https://github.com/npm/npm-bundled/pull/89) auto publish (#89) (@lukekarrys)
+* [`38c91f7`](https://github.com/npm/npm-bundled/commit/38c91f79921afa1e2256a64a3a60fb9d8b6e0fa1) [#87](https://github.com/npm/npm-bundled/pull/87) bump @npmcli/template-oss to 4.22.0 (@lukekarrys)
+* [`070a724`](https://github.com/npm/npm-bundled/commit/070a7247155f94496a132ade46e9d2771caef307) [#86](https://github.com/npm/npm-bundled/pull/86) create separate cwd test (@lukekarrys)
+* [`240ecbd`](https://github.com/npm/npm-bundled/commit/240ecbdaf1eca2ac1332458c8d15ef33d63672f9) [#44](https://github.com/npm/npm-bundled/pull/44) deps: remove mkdirp and rimraf (#44) (@lukekarrys, @wraithgar)
+* [`acfc9f4`](https://github.com/npm/npm-bundled/commit/acfc9f4f9b57c2fee38d1538cd796a94fbdf6a2c) [#87](https://github.com/npm/npm-bundled/pull/87) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`bbfc416`](https://github.com/npm/npm-bundled/commit/bbfc416ca26d3823d8956b684c4fbd2b74bcc8aa) [#86](https://github.com/npm/npm-bundled/pull/86) bump @npmcli/template-oss from 4.21.3 to 4.21.4 (@dependabot[bot])
+
 ## [3.0.0](https://github.com/npm/npm-bundled/compare/v2.0.1...v3.0.0) (2022-10-14)
 
 ### ⚠️ BREAKING CHANGES
