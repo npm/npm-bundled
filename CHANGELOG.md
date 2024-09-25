@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.0.0](https://github.com/npm/npm-bundled/compare/v3.0.1...v4.0.0) (2024-09-24)
+### ⚠️ BREAKING CHANGES
+* `npm-bundled` now supports node `^18.17.0 || >=20.5.0`
+### Bug Fixes
+* [`099af07`](https://github.com/npm/npm-bundled/commit/099af07bee7b761f2fdde4fbbd2eeba0273a6a71) [#102](https://github.com/npm/npm-bundled/pull/102) align to npm 10 node engine range (@hashtagchris)
+### Dependencies
+* [`5a83713`](https://github.com/npm/npm-bundled/commit/5a837133271b7d7438b80c60f705efe563693140) [#102](https://github.com/npm/npm-bundled/pull/102) `npm-normalize-package-bin@4.0.0`
+### Chores
+* [`9709604`](https://github.com/npm/npm-bundled/commit/970960418864bf5833857fc3a4e41e1e025fe1f8) [#102](https://github.com/npm/npm-bundled/pull/102) run template-oss-apply (@hashtagchris)
+* [`fe37e08`](https://github.com/npm/npm-bundled/commit/fe37e089d7b89d87d5aaa5e15a6688d1d7124f9d) [#99](https://github.com/npm/npm-bundled/pull/99) bump @npmcli/eslint-config from 4.0.5 to 5.0.0 (@dependabot[bot])
+* [`ae1bb99`](https://github.com/npm/npm-bundled/commit/ae1bb99e22bd509b53c1156decf1b9430526464c) [#100](https://github.com/npm/npm-bundled/pull/100) postinstall for dependabot template-oss PR (@hashtagchris)
+* [`b211ca0`](https://github.com/npm/npm-bundled/commit/b211ca091309f78bb27575a6b4e71c9159adc46f) [#100](https://github.com/npm/npm-bundled/pull/100) bump @npmcli/template-oss from 4.23.1 to 4.23.3 (@dependabot[bot])
+
 ## [3.0.1](https://github.com/npm/npm-bundled/compare/v3.0.0...v3.0.1) (2024-05-06)
 
 ### Bug Fixes
