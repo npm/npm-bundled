@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.0](https://github.com/npm/npm-bundled/compare/v4.0.0...v5.0.0) (2025-10-23)
+### ⚠️ BREAKING CHANGES
+* `npm-bundled` now supports node `^20.17.0 || >=22.9.0`
+### Bug Fixes
+* [`2929cfa`](https://github.com/npm/npm-bundled/commit/2929cfa28232ef065e7ebbc3305638267bfa29a5) [#113](https://github.com/npm/npm-bundled/pull/113) align to npm 11 node engine range (@owlstronaut)
+### Dependencies
+* [`96599e7`](https://github.com/npm/npm-bundled/commit/96599e7133f9418da9344279b962cc09e613e10d) [#113](https://github.com/npm/npm-bundled/pull/113) `npm-normalize-package-bin@5.0.0`
+### Chores
+* [`614df03`](https://github.com/npm/npm-bundled/commit/614df039fecb05ff763eb6ef2ab3264edd7d2129) [#113](https://github.com/npm/npm-bundled/pull/113) template-oss-apply (@owlstronaut)
+* [`48ebded`](https://github.com/npm/npm-bundled/commit/48ebdedeeb10ef8d74fe76b2c01c915111b4834f) [#106](https://github.com/npm/npm-bundled/pull/106) postinstall workflow updates (#106) (@owlstronaut)
+* [`f7521e3`](https://github.com/npm/npm-bundled/commit/f7521e3f10fcf106f246434a6b72f127c3e4b60f) [#111](https://github.com/npm/npm-bundled/pull/111) bump @npmcli/template-oss from 4.26.0 to 4.27.1 (#111) (@dependabot[bot], @npm-cli-bot)
+
 ## [4.0.0](https://github.com/npm/npm-bundled/compare/v3.0.1...v4.0.0) (2024-09-24)
 ### ⚠️ BREAKING CHANGES
 * `npm-bundled` now supports node `^18.17.0 || >=20.5.0`
