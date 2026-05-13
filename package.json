@@ -30,7 +30,7 @@
     "lib/"
   ],
   "dependencies": {
-    "npm-normalize-package-bin": "^5.0.0"
+    "npm-normalize-package-bin": "^6.0.0"
   },
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
