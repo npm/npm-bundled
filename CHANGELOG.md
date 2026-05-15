@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.0.0](https://github.com/npm/npm-bundled/compare/v5.0.0...v6.0.0) (2026-05-15)
+### ⚠️ BREAKING CHANGES
+* `npm-bundled` now supports node `^22.22.2 || ^24.15.0 || >=26.0.0`
+* template-oss-apply
+### Features
+* [`5a44aeb`](https://github.com/npm/npm-bundled/commit/5a44aeb3cbbcd20f4ffc8f7eff0e2989b0a7b9dd) [#125](https://github.com/npm/npm-bundled/pull/125) bump to new node engine range (@owlstronaut)
+* [`90424b4`](https://github.com/npm/npm-bundled/commit/90424b4c2892365ad5acc88e48e34791950a4cc7) [#125](https://github.com/npm/npm-bundled/pull/125) template-oss-apply (@owlstronaut)
+### Dependencies
+* [`50aace7`](https://github.com/npm/npm-bundled/commit/50aace72d925a0c3b28c75f4fc13e3b529bed795) [#125](https://github.com/npm/npm-bundled/pull/125) `npm-normalize-package-bin@6.0.0`
+### Chores
+* [`e6e58d3`](https://github.com/npm/npm-bundled/commit/e6e58d32fc2d14a6c63c892a9d620793d7578e75) [#125](https://github.com/npm/npm-bundled/pull/125) template-oss-apply (@owlstronaut)
+* [`6f0fcd6`](https://github.com/npm/npm-bundled/commit/6f0fcd6bb7f9197baaade5d8f0c4289c56223586) [#125](https://github.com/npm/npm-bundled/pull/125) bumping @npmcli/template-oss from 4.30.0 to 5.1.0 (@owlstronaut)
+* [`1a2aff7`](https://github.com/npm/npm-bundled/commit/1a2aff77f44c0c40edb8690b64fb7e877184a739) [#116](https://github.com/npm/npm-bundled/pull/116) bump @npmcli/eslint-config from 5.1.0 to 6.0.0 (#116) (@dependabot[bot])
+* [`6d70d57`](https://github.com/npm/npm-bundled/commit/6d70d5777b7744228d317e369ce45623814bd1ca) [#121](https://github.com/npm/npm-bundled/pull/121) bump @npmcli/template-oss from 4.29.0 to 4.30.0 (#121) (@dependabot[bot], @npm-cli-bot)
+
 ## [5.0.0](https://github.com/npm/npm-bundled/compare/v4.0.0...v5.0.0) (2025-10-23)
 ### ⚠️ BREAKING CHANGES
 * `npm-bundled` now supports node `^20.17.0 || >=22.9.0`
